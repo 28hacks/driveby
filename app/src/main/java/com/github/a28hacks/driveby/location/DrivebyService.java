@@ -1,4 +1,4 @@
-package com.github.a28hacks.driveby;
+package com.github.a28hacks.driveby.location;
 
 import android.app.Service;
 import android.content.Context;
@@ -25,7 +25,7 @@ public class DrivebyService extends Service {
 
     @Override
     public IBinder onBind(Intent arg0) {
-        Log.e(TAG, "onStartCommand");
+        Log.e(TAG, "onBind");
         return null;
     }
 
