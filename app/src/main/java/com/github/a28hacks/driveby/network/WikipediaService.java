@@ -2,6 +2,8 @@ package com.github.a28hacks.driveby.network;
 
 import com.github.a28hacks.driveby.model.wiki_api.WikipediaResult;
 
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -19,7 +21,11 @@ public interface WikipediaService {
             @Query("pageids") String pageIds
     );
 
-
+    class Util {
+        public static String formatCoordinates(double lat, double lng) {
+            return String.format(Locale.US, "%f|%f", lat, lng);
+        }
+    }
 
 
 }

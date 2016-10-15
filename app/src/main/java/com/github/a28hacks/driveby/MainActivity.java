@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,19 +21,8 @@ import android.widget.EditText;
 import com.github.a28hacks.driveby.audio.TextToSpeechService;
 import com.github.a28hacks.driveby.location.DrivebyService;
 
-import com.github.a28hacks.driveby.model.wiki_api.GeoSearchResult;
-import com.github.a28hacks.driveby.model.wiki_api.WikipediaResult;
-import com.github.a28hacks.driveby.network.WikipediaService;
-
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -77,53 +65,6 @@ public class MainActivity extends AppCompatActivity {
                 if(bound) {
                     speakText();
                 }
-            }
-        });
-        testApi();
-    }
-
-    private void testApi() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://en.wikipedia.org/w/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        final WikipediaService service = retrofit.create(WikipediaService.class);
-
-        service.getItemForLocation(10000, "53.080014|8.790364").enqueue(new Callback<WikipediaResult>() {
-            @Override
-            public void onResponse(Call<WikipediaResult> call, Response<WikipediaResult> response) {
-                StringBuilder ids = new StringBuilder();
-                Log.d(TAG, "onResponse: " + call.request().url().toString());
-                for (GeoSearchResult geoSearchResult : response.body().getQuery().getItems()) {
-                    Log.d(TAG, "onResponse: " + geoSearchResult.getPageId() + " - "
-                            + geoSearchResult.getTitle() + ", " + geoSearchResult.getDistance()
-                            + ": " + geoSearchResult.getType());
-                    ids.append(geoSearchResult.getPageId()).append("|");
-                }
-
-                service.getExtractText(ids.toString()).enqueue(new Callback<WikipediaResult>() {
-                    @Override
-                    public void onResponse(Call<WikipediaResult> call, Response<WikipediaResult> response) {
-                        Log.d(TAG, "onFailure: " + call.request().url().toString());
-                        Map<String, GeoSearchResult> pages = response.body().getQuery().getPages();
-                        for (String key : pages.keySet()) {
-                            GeoSearchResult item = pages.get(key);
-                            Log.d(TAG, "onResponse: " + item.getTitle() + ": " + item.getExtract());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<WikipediaResult> call, Throwable t) {
-                        Log.d(TAG, "onFailure: " + call.request().url().toString());
-                        Log.e(TAG, "onFailure: ", t);
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Call<WikipediaResult> call, Throwable t) {
-
             }
         });
     }
