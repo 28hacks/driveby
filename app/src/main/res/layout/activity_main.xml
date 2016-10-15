@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -16,4 +17,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start Driveby"/>
-</RelativeLayout>
+
+    <EditText
+        android:id="@+id/et_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="The City Municipality of Bremen (German: Stadtgemeinde Bremen) is a Hanseatic city in northwestern Germany, which belongs to the state Free Hanseatic City of Bremen (also called just Bremen for short). As a commercial and industrial city with a major port on the River Weser, Bremen is part of the Bremen/Oldenburg Metropolitan Region, with 2.4 million people."
+        />
+    <Button
+        android:id="@+id/btn_speak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Text"/>
+</LinearLayout>

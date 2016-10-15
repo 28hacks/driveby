@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".DrivebyService" android:enabled="true"/>
+        <service android:name=".location.DrivebyService" android:enabled="true"/>
+        <service android:name=".audio.TextToSpeechService" android:enabled="true"/>
     </application>
 
 </manifest>

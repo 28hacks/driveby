@@ -1,4 +1,4 @@
-package com.github.a28hacks.driveby;
+package com.github.a28hacks.driveby.location;
 
 import android.location.Location;
 import android.location.LocationListener;
