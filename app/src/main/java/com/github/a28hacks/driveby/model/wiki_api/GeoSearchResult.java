@@ -1,9 +1,9 @@
-package com.github.a28hacks.driveby.model;
+package com.github.a28hacks.driveby.model.wiki_api;
 
 
 import com.google.gson.annotations.SerializedName;
 
-public class GeoItem {
+public class GeoSearchResult {
 
     @SerializedName("pageid")
     private long pageId;

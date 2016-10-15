@@ -22,8 +22,8 @@ import android.widget.EditText;
 import com.github.a28hacks.driveby.audio.TextToSpeechService;
 import com.github.a28hacks.driveby.location.DrivebyService;
 
-import com.github.a28hacks.driveby.model.GeoItem;
-import com.github.a28hacks.driveby.model.WikipediaResult;
+import com.github.a28hacks.driveby.model.wiki_api.GeoSearchResult;
+import com.github.a28hacks.driveby.model.wiki_api.WikipediaResult;
 import com.github.a28hacks.driveby.network.WikipediaService;
 
 import java.util.Map;
@@ -95,20 +95,20 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<WikipediaResult> call, Response<WikipediaResult> response) {
                 StringBuilder ids = new StringBuilder();
                 Log.d(TAG, "onResponse: " + call.request().url().toString());
-                for (GeoItem geoItem : response.body().getQuery().getItems()) {
-                    Log.d(TAG, "onResponse: " + geoItem.getPageId() + " - "
-                            + geoItem.getTitle() + ", " + geoItem.getDistance()
-                            + ": " + geoItem.getType());
-                    ids.append(geoItem.getPageId()).append("|");
+                for (GeoSearchResult geoSearchResult : response.body().getQuery().getItems()) {
+                    Log.d(TAG, "onResponse: " + geoSearchResult.getPageId() + " - "
+                            + geoSearchResult.getTitle() + ", " + geoSearchResult.getDistance()
+                            + ": " + geoSearchResult.getType());
+                    ids.append(geoSearchResult.getPageId()).append("|");
                 }
 
                 service.getExtractText(ids.toString()).enqueue(new Callback<WikipediaResult>() {
                     @Override
                     public void onResponse(Call<WikipediaResult> call, Response<WikipediaResult> response) {
                         Log.d(TAG, "onFailure: " + call.request().url().toString());
-                        Map<String, GeoItem> pages = response.body().getQuery().getPages();
+                        Map<String, GeoSearchResult> pages = response.body().getQuery().getPages();
                         for (String key : pages.keySet()) {
-                            GeoItem item = pages.get(key);
+                            GeoSearchResult item = pages.get(key);
                             Log.d(TAG, "onResponse: " + item.getTitle() + ": " + item.getExtract());
                         }
                     }

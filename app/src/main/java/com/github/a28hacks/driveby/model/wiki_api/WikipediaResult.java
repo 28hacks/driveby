@@ -1,4 +1,4 @@
-package com.github.a28hacks.driveby.model;
+package com.github.a28hacks.driveby.model.wiki_api;
 
 public class WikipediaResult {
 

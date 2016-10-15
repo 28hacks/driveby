@@ -1,6 +1,6 @@
 package com.github.a28hacks.driveby.network;
 
-import com.github.a28hacks.driveby.model.WikipediaResult;
+import com.github.a28hacks.driveby.model.wiki_api.WikipediaResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -18,6 +18,7 @@ public interface WikipediaService {
     Call<WikipediaResult> getExtractText(
             @Query("pageids") String pageIds
     );
+
 
 
 
