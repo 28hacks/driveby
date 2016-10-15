@@ -1,9 +1,11 @@
 package com.github.a28hacks.driveby.logic;
 
 
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
+import com.github.a28hacks.driveby.database.RealmProvider;
 import com.github.a28hacks.driveby.location.DbLocationAdapter;
 import com.github.a28hacks.driveby.model.wiki_api.GeoSearchResult;
 import com.github.a28hacks.driveby.model.wiki_api.QueryResult;
@@ -13,6 +15,7 @@ import com.github.a28hacks.driveby.network.WikipediaService;
 import java.util.List;
 import java.util.Map;
 
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,13 +27,15 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
     private static final String TAG = "GuideController";
 
     private final WikipediaService mWikipediaService;
+    private final Realm mRealm;
 
-    public GuideController() {
+    public GuideController(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://en.wikipedia.org/w/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        mRealm = RealmProvider.createRealmInstance(context);
         mWikipediaService = retrofit.create(WikipediaService.class);
     }
 

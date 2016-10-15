@@ -1,5 +1,6 @@
 package com.github.a28hacks.driveby.model.database;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -10,6 +11,8 @@ public class GeoItem extends RealmObject {
     private String title;
     private double latitude;
     private double longitude;
+    private RealmList<InfoChunk> infoChunks;
+    private String type;
 
     public long getId() {
         return id;
@@ -41,5 +44,21 @@ public class GeoItem extends RealmObject {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public RealmList<InfoChunk> getInfoChunks() {
+        return infoChunks;
+    }
+
+    public void setInfoChunks(RealmList<InfoChunk> infoChunks) {
+        this.infoChunks = infoChunks;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

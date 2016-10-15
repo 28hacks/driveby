@@ -62,7 +62,7 @@ public class DrivebyService extends Service {
             Log.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
 
-        mGuideController = new GuideController();
+        mGuideController = new GuideController(getApplicationContext());
         for (DbLocationAdapter locationListener : mLocationListeners) {
             locationListener.setChangedListener(mGuideController);
         }
