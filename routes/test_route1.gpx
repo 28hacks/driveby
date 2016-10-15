@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.0">
+	<name>Route1</name>
+	<trk>
+		<name>Groepelingen-Huchting</name>
+		<number>1</number>
+		<trkseg>
+			<trkpt lat="53.1340" lon="8.7535"><time>2016-10-17T14:00:00Z</time></trkpt>
+			<trkpt lat="53.1309" lon="8.7613"><time>2016-10-17T14:00:10Z</time></trkpt>
+			<trkpt lat="53.1277" lon="8.7691"><time>2016-10-17T14:00:20Z</time></trkpt>
+			<trkpt lat="53.1246" lon="8.7777"><time>2016-10-17T14:00:30Z</time></trkpt>
+			<trkpt lat="53.1216" lon="8.7860"><time>2016-10-17T14:00:40Z</time></trkpt>
+			<trkpt lat="53.1196" lon="8.7952"><time>2016-10-17T14:00:50Z</time></trkpt>
+			<trkpt lat="53.1173" lon="8.8059"><time>2016-10-17T14:01:00Z</time></trkpt>
+			<trkpt lat="53.1164" lon="8.8094"><time>2016-10-17T14:01:10Z</time></trkpt>
+			<trkpt lat="53.1154" lon="8.8106"><time>2016-10-17T14:01:20Z</time></trkpt>
+			<trkpt lat="53.1131" lon="8.8109"><time>2016-10-17T14:01:30Z</time></trkpt>
+			<trkpt lat="53.1110" lon="8.8085"><time>2016-10-17T14:01:40Z</time></trkpt>
+			<trkpt lat="53.1089" lon="8.8046"><time>2016-10-17T14:01:50Z</time></trkpt>
+			<trkpt lat="53.1026" lon="8.8004"><time>2016-10-17T14:02:00Z</time></trkpt>
+			<trkpt lat="53.0995" lon="8.7965"><time>2016-10-17T14:02:10Z</time></trkpt>
+			<trkpt lat="53.0949" lon="8.7949"><time>2016-10-17T14:02:20Z</time></trkpt>
+			<trkpt lat="53.0920" lon="8.7940"><time>2016-10-17T14:02:30Z</time></trkpt>
+			<trkpt lat="53.0894" lon="8.7964"><time>2016-10-17T14:02:40Z</time></trkpt>
+			<trkpt lat="53.0868" lon="8.7973"><time>2016-10-17T14:02:50Z</time></trkpt>
+			<trkpt lat="53.0843" lon="8.7940"><time>2016-10-17T14:03:00Z</time></trkpt>
+			<trkpt lat="53.0794" lon="8.7901"><time>2016-10-17T14:03:10Z</time></trkpt>
+			<trkpt lat="53.0740" lon="8.7862"><time>2016-10-17T14:03:20Z</time></trkpt>
+			<trkpt lat="53.0705" lon="8.7816"><time>2016-10-17T14:03:30Z</time></trkpt>
+			<trkpt lat="53.0658" lon="8.7769"><time>2016-10-17T14:03:40Z</time></trkpt>
+			<trkpt lat="53.0624" lon="8.7728"><time>2016-10-17T14:03:50Z</time></trkpt>
+			<trkpt lat="53.0606" lon="8.7640"><time>2016-10-17T14:04:00Z</time></trkpt>
+			<trkpt lat="53.0583" lon="8.7577"><time>2016-10-17T14:04:10Z</time></trkpt>
+			<trkpt lat="53.0543" lon="8.7497"><time>2016-10-17T14:04:20Z</time></trkpt>
+			<trkpt lat="53.0529" lon="8.7405"><time>2016-10-17T14:04:30Z</time></trkpt>
+			<trkpt lat="53.0540" lon="8.7300"><time>2016-10-17T14:04:40Z</time></trkpt>
+			<trkpt lat="53.0525" lon="8.7223"><time>2016-10-17T14:04:50Z</time></trkpt>
+			<trkpt lat="53.0495" lon="8.7152"><time>2016-10-17T14:05:00Z</time></trkpt>
+
+		</trkseg>
+	</trk>
+</gpx>
