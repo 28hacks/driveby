@@ -17,6 +17,8 @@ public class GeoItem {
     @SerializedName("dist")
     private float distance;
 
+    private String extract;
+
     public long getPageId() {
         return pageId;
     }
@@ -55,5 +57,13 @@ public class GeoItem {
 
     public void setDistance(float distance) {
         this.distance = distance;
+    }
+
+    public String getExtract() {
+        return extract;
+    }
+
+    public void setExtract(String extract) {
+        this.extract = extract;
     }
 }
