@@ -19,6 +19,8 @@ public class GeoItem {
 
     private String extract;
 
+    private String type;
+
     public long getPageId() {
         return pageId;
     }
@@ -65,5 +67,13 @@ public class GeoItem {
 
     public void setExtract(String extract) {
         this.extract = extract;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

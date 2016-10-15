@@ -70,10 +70,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<WikipediaResult> call, Response<WikipediaResult> response) {
                 StringBuilder ids = new StringBuilder();
+                Log.d(TAG, "onResponse: " + call.request().url().toString());
                 for (GeoItem geoItem : response.body().getQuery().getItems()) {
                     Log.d(TAG, "onResponse: " + geoItem.getPageId() + " - "
                             + geoItem.getTitle() + ", " + geoItem.getDistance()
-                            + ": " + geoItem.getExtract());
+                            + ": " + geoItem.getType());
                     ids.append(geoItem.getPageId()).append("|");
                 }
 

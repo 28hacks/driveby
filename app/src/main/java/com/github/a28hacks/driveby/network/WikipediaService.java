@@ -7,7 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface WikipediaService {
-    @GET("api.php?action=query&format=json&list=geosearch&prop=extracts&exintro=&explaintext=")
+    @GET("api.php?action=query&format=json&list=geosearch&gsprop=type")
     Call<WikipediaResult> getItemForLocation(
             @Query("gsradius") int radius,
             @Query("gscoord") String formatedCoords
