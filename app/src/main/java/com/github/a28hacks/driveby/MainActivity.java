@@ -14,6 +14,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +25,7 @@ import com.github.a28hacks.driveby.database.RealmProvider;
 import com.github.a28hacks.driveby.location.DrivebyService;
 import com.github.a28hacks.driveby.model.database.GeoItem;
 import com.github.a28hacks.driveby.model.database.InfoChunk;
+import com.github.a28hacks.driveby.ui.NotificationController;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,15 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean bound;
 
 
-    @BindView(R.id.btn_start_services)
-    protected Button toggleServicesBtn;
-    @BindView(R.id.et_input)
-    protected EditText etInput;
-    @BindView(R.id.btn_speak)
-    protected Button speakBtn;
-    @BindView(R.id.btn_reset)
-    protected Button resetBtn;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,33 +52,31 @@ public class MainActivity extends AppCompatActivity {
         checkTTSVoices();
 
         mRealm = RealmProvider.createRealmInstance(this);
-
-        if (isMyServiceRunning(DrivebyService.class)) {
-            toggleServicesBtn.setText("Stop Driveby");
-        }
-
-        toggleServicesBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleServices();
-            }
-        });
-        speakBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(bound) {
-                    speakText();
-                }
-            }
-        });
-        resetBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetHistory();
-            }
-        });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        if (isMyServiceRunning(DrivebyService.class)) {
+            menu.findItem(R.id.toggle).setTitle("Stop");
+            menu.findItem(R.id.toggle).setIcon(R.drawable.ic_hearing_white_24dp);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toggle:
+                toggleServices();
+                invalidateOptionsMenu();
+                break;
+            case R.id.delete_history:
+                resetHistory();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onStop() {
@@ -103,18 +95,18 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(checkIntent, TTS_CHECK_CODE);
     }
 
-    private void resetHistory(){
+    private void resetHistory() {
         mRealm.beginTransaction();
-        for(GeoItem item : mRealm.where(GeoItem.class).findAll()) {
-            for(InfoChunk ic : item.getInfoChunks()) {
+        for (GeoItem item : mRealm.where(GeoItem.class).findAll()) {
+            for (InfoChunk ic : item.getInfoChunks()) {
                 ic.setTold(false);
             }
         }
         mRealm.commitTransaction();
     }
 
-    void toggleServices(){
-        if(isMyServiceRunning(DrivebyService.class)){
+    void toggleServices() {
+        if (isMyServiceRunning(DrivebyService.class)) {
             // Unbind from the service
             if (bound) {
                 unbindService(mConnection);
@@ -122,22 +114,14 @@ public class MainActivity extends AppCompatActivity {
             }
             stopService(new Intent(this, DrivebyService.class));
             stopService(new Intent(this, TextToSpeechService.class));
-            toggleServicesBtn.setText("Start Driveby");
+            new NotificationController(getApplicationContext()).dismissNotification();
         } else {
             startService(new Intent(this, DrivebyService.class));
             startService(new Intent(this, TextToSpeechService.class));
-            toggleServicesBtn.setText("Stop Driveby");
 
             // Bind to TTSService
             Intent intent = new Intent(this, TextToSpeechService.class);
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        }
-    }
-
-    void speakText() {
-        String input = etInput.getText().toString();
-        if(!input.isEmpty()){
-            ttsService.speak(input);
         }
     }
 
@@ -191,7 +175,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Defines callbacks for service binding, passed to bindService() */
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
