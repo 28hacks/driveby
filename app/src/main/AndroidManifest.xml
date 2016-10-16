@@ -21,6 +21,38 @@
 
         <service android:name=".location.DrivebyService" android:enabled="true"/>
         <service android:name=".audio.TextToSpeechService" android:enabled="true"/>
+
+        <!-- Widget -->
+
+        <activity android:name=".ui.widget.ConfigureWidgetActivtiy"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".ui.widget.DriveByWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+        <service android:name=".ui.widget.UpdateWidgetService"/>
+
+        <!-- Needs minSDK 24
+        <service
+            android:name=".location.DrivebyService"
+            android:icon="@drawable/ic_hearing_white_36dp"
+            android:label="Toggle"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action
+                    android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+        -->
     </application>
 
 </manifest>
