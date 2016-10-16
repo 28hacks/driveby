@@ -112,8 +112,10 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                         searchResult.getExtract() != null &&
                         !searchResult.getExtract().isEmpty()) {
                     infoChunks = new RealmList<>();
-                    List<String> sentences = TextUtils.splitSentences(searchResult.getExtract());
+                    String text = TextUtils.beautify(searchResult.getExtract());
+                    List<String> sentences = TextUtils.splitSentences(text);
                     for (String sentence : sentences) {
+                        if(sentence.trim().length() == 0) continue;
                         InfoChunk managedChunk = mRealm.copyToRealm(new InfoChunk(sentence, false));
                         infoChunks.add(managedChunk);
                     }
