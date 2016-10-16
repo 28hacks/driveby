@@ -41,6 +41,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GuideController implements Callback<WikipediaResult>, DbLocationAdapter.LocationChangedListener {
 
     private static final String TAG = "GuideController";
+    private static final float MIN_DISTANCE_GENERAL = 800;
+    private static final float MIN_DISTANCE_CITY = 4000;
 
     private final WikipediaService mWikipediaService;
     private final Realm mRealm;
@@ -83,6 +85,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
 
     @Override
     public void onResponse(Call<WikipediaResult> call, Response<WikipediaResult> response) {
+        Log.d(TAG, "onResponse: " + call.request().url().toString());
         QueryResult queryResult = response.body().getQuery();
         if (queryResult.getItems() != null) {
             processSearchResult(queryResult.getItems());
@@ -100,13 +103,11 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
             if (searchResult.getPageId() == 0) {
                 continue;
             }
-            Log.d(TAG, "processPageResult: " + s + " - " + searchResult.getExtract());
 
             RealmQuery<GeoItem> query = mRealm.where(GeoItem.class);
             query.equalTo("id", searchResult.getPageId());
             GeoItem item = query.findFirst();
             if (item != null) {
-                Log.e(TAG, "processPageResult: Query Result = " + item.getId());
                 RealmList<InfoChunk> infoChunks;
                 if ((item.getInfoChunks() == null || item.getInfoChunks().isEmpty()) &&
                         searchResult.getExtract() != null &&
@@ -135,21 +136,24 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
             mCurrentItem = findBestItem(currentItems, null);
         }
 
-        //bind to speech service if needed
-        if (!boundToSpeechService) {
-            // Bind to TTSService
-            Intent intent = new Intent(mContext, TextToSpeechService.class);
-            mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        } else {
-            executeSpeak();
+
+        if (mCurrentItem != null) {
+            //bind to speech service if needed
+            if (!boundToSpeechService) {
+                // Bind to TTSService
+                Intent intent = new Intent(mContext, TextToSpeechService.class);
+                mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            } else {
+                executeSpeak();
+            }
         }
 
     }
 
     private GeoItem findBestItem(List<GeoItem> currentItems, String type) {
         for (GeoItem item : currentItems) {
-            if (type != null && !item.getType().equalsIgnoreCase(type)) {
-                break;
+            if (type != null && !type.equalsIgnoreCase(item.getType())) {
+                continue;
             }
             boolean hasUntoldEntries = !item.getInfoChunks().isEmpty();
             for (InfoChunk infoChunk : item.getInfoChunks()) {
@@ -204,12 +208,11 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
 
 
     private void processSearchResult(List<GeoSearchResult> items) {
-        // TODO: compare ids and don't do anything if nearest item didn't change
 
         //create entry in db only when it's a new datapoint
         mRealm.beginTransaction();
+        Log.d(TAG, "\n\nprocessSearchResult: new Items:\n");
         for (GeoSearchResult result : items) {
-            Log.d(TAG, "processSearchResult: " + result.getPageId() + result.getTitle());
             RealmQuery<GeoItem> query = mRealm.where(GeoItem.class);
             query.equalTo("id", result.getPageId());
             GeoItem item = query.findFirst();
@@ -217,16 +220,33 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                 item = new GeoItem(result);
                 mRealm.copyToRealmOrUpdate(item);
             }
+            Log.d(TAG, "processSearchResult: " + result.getPageId() + "[" + result.getDistance() + "]" + ": " + result.getTitle());
         }
         mRealm.commitTransaction();
 
 
         StringBuilder ids = new StringBuilder();
         for (GeoSearchResult geoSearchResult : items) {
-            ids.append(geoSearchResult.getPageId()).append("|");
+            //only add results in an specified radius, depending on type of result
+            float minDistance = MIN_DISTANCE_GENERAL;
+            if (geoSearchResult.getType() != null
+                    && geoSearchResult.getType().equalsIgnoreCase("city")) {
+                minDistance = MIN_DISTANCE_CITY;
+            }
+            if (geoSearchResult.getDistance() < minDistance) {
+                ids.append(geoSearchResult.getPageId()).append("|");
+            }
         }
+
+        String idString = ids.toString();
+
+        //don't do anything if there is no relevant searchResult
+        if (idString.isEmpty()) {
+            return;
+        }
+
         if (currentlySpeaking) {
-            pendingCall = mWikipediaService.getExtractText(ids.toString());
+            pendingCall = mWikipediaService.getExtractText(idString);
         } else {
             mWikipediaService.getExtractText(ids.toString()).enqueue(this);
         }
