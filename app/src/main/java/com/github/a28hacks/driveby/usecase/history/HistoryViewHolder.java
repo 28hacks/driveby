@@ -1,5 +1,7 @@
 package com.github.a28hacks.driveby.usecase.history;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -22,7 +24,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void onBind(GeoItem geoItem) {
+    public void onBind(final GeoItem geoItem) {
         title.setText(geoItem.getTitle());
 
         for (InfoChunk infoChunk : geoItem.getInfoChunks()) {
@@ -30,6 +32,16 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
             }
         }
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "https://en.m.wikipedia.org/?curid=" + geoItem.getId();
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                itemView.getContext().startActivity(i);
+            }
+        });
 
     }
 }
