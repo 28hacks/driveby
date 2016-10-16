@@ -21,12 +21,17 @@
     <EditText
         android:id="@+id/et_input"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="The City Municipality of Bremen (German: Stadtgemeinde Bremen) is a Hanseatic city in northwestern Germany, which belongs to the state Free Hanseatic City of Bremen (also called just Bremen for short). As a commercial and industrial city with a major port on the River Weser, Bremen is part of the Bremen/Oldenburg Metropolitan Region, with 2.4 million people."
-        />
+        android:layout_height="wrap_content"/>
     <Button
         android:id="@+id/btn_speak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send Text"/>
+        android:text="Speak Text"/>
+
+    <Button
+        android:id="@+id/btn_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset History"
+        />
 </LinearLayout>
