@@ -36,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -69,8 +70,10 @@ public class MainActivity extends AppCompatActivity {
         );
         mHistoryList.setAdapter(mHistoryAdapter);
         mHistoryAdapter.setGeoItems(mRealm.where(GeoItem.class)
-                .equalTo("wasToldAbout", true)
-                .findAll());
+                .isNotNull("firstToldAbout")
+                .findAll()
+                .sort("firstToldAbout", Sort.DESCENDING)
+        );
     }
 
     @Override
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             for (InfoChunk ic : item.getInfoChunks()) {
                 ic.setTold(false);
             }
-            item.setWasToldAbout(false);
+            item.setFirstToldAbout(null);
         }
         mRealm.commitTransaction();
     }

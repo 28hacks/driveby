@@ -26,6 +26,7 @@ import com.github.a28hacks.driveby.text.TextUtils;
 import com.github.a28hacks.driveby.ui.NotificationController;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -187,7 +188,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                 if (!infoChunks.get(i).wasTold()) {
                     outputText += infoChunks.get(i).getSentence();
                     infoChunks.get(i).setTold(true);
-                    item.setWasToldAbout(true);
+                    item.setFirstToldAbout(new Date());
                     break;
                 }
             }
@@ -196,7 +197,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                 if (!infoChunks.get(i).wasTold()) {
                     outputText += infoChunks.get(i).getSentence();
                     infoChunks.get(i).setTold(true);
-                    item.setWasToldAbout(true);
+                    item.setFirstToldAbout(new Date());
                     break;
                 }
             }
