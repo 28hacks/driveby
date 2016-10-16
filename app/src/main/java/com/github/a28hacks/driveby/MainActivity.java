@@ -2,6 +2,7 @@ package com.github.a28hacks.driveby;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,6 +30,8 @@ import com.github.a28hacks.driveby.database.RealmProvider;
 import com.github.a28hacks.driveby.location.DrivebyService;
 import com.github.a28hacks.driveby.model.database.GeoItem;
 import com.github.a28hacks.driveby.model.database.InfoChunk;
+import com.github.a28hacks.driveby.ui.widget.DriveByWidgetProvider;
+import com.github.a28hacks.driveby.ui.widget.UpdateWidgetService;
 import com.github.a28hacks.driveby.ui.NotificationController;
 import com.github.a28hacks.driveby.usecase.history.HistoryAdapter;
 
@@ -152,9 +155,11 @@ public class MainActivity extends AppCompatActivity {
             stopService(new Intent(this, DrivebyService.class));
             stopService(new Intent(this, TextToSpeechService.class));
             new NotificationController(getApplicationContext()).dismissNotification();
+            updateWidgets();
         } else {
             startService(new Intent(this, DrivebyService.class));
             startService(new Intent(this, TextToSpeechService.class));
+            updateWidgets();
 
             // Bind to TTSService
             Intent intent = new Intent(this, TextToSpeechService.class);
@@ -162,6 +167,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateWidgets() {
+        int[] ids = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), DriveByWidgetProvider.class));
+        DriveByWidgetProvider myWidget = new DriveByWidgetProvider();
+        myWidget.onUpdate(this, AppWidgetManager.getInstance(this),ids);
+    }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

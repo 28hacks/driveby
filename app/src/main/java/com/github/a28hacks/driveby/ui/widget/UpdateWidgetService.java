@@ -46,10 +46,10 @@ public class UpdateWidgetService extends Service {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : allWidgetIds) {
 
-            // Get the layout for the App Widget and attach an on-click listener
-            // to the button
-            Intent in = new Intent(this, EmptyActivity.class);
-            RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_layout);
+            // Create an Intent to launch ExampleActivity
+            Intent in = new Intent(getApplicationContext(), EmptyActivity.class);
+            RemoteViews views = new RemoteViews(getApplication().getPackageName(), R.layout.widget_layout);
+
             if(isMyServiceRunning(DrivebyService.class)) {
                 views.setImageViewResource(R.id.imageviewBtn, R.drawable.ic_hearing_white_36dp);
                 in.putExtra("ACTION",ACTION_STOP_SERVICES);
@@ -60,9 +60,11 @@ public class UpdateWidgetService extends Service {
                 Log.e(TAG, "onStartCommand: Widget will start services");
             }
 
-            PendingIntent clickPenIntent = PendingIntent.getActivities(this, 0,
-                    new Intent[] {in}, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.widget_layout,clickPenIntent);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, in, 0);
+
+            // Get the layout for the App Widget and attach an on-click listener
+            // to the button
+            views.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
