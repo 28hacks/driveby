@@ -14,6 +14,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,7 @@ import com.github.a28hacks.driveby.location.DrivebyService;
 import com.github.a28hacks.driveby.model.database.GeoItem;
 import com.github.a28hacks.driveby.model.database.InfoChunk;
 import com.github.a28hacks.driveby.ui.NotificationController;
+import com.github.a28hacks.driveby.usecase.history.HistoryAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
     private TextToSpeechService ttsService;
     private boolean bound;
 
+    private HistoryAdapter mHistoryAdapter;
+
+    @BindView(R.id.history_list)
+    RecyclerView mHistoryList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +60,15 @@ public class MainActivity extends AppCompatActivity {
         checkTTSVoices();
 
         mRealm = RealmProvider.createRealmInstance(this);
+
+        mHistoryAdapter = new HistoryAdapter();
+        mHistoryList.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        );
+        mHistoryList.setAdapter(mHistoryAdapter);
+        mHistoryAdapter.setGeoItems(mRealm.where(GeoItem.class)
+                .equalTo("wasToldAbout", true)
+                .findAll());
     }
 
     @Override
@@ -101,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             for (InfoChunk ic : item.getInfoChunks()) {
                 ic.setTold(false);
             }
+            item.setWasToldAbout(false);
         }
         mRealm.commitTransaction();
     }

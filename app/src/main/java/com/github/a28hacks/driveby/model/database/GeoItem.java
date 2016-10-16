@@ -16,6 +16,7 @@ public class GeoItem extends RealmObject {
     private double longitude;
     private RealmList<InfoChunk> infoChunks;
     private String type;
+    private boolean wasToldAbout;
 
     public GeoItem() {
 
@@ -75,5 +76,13 @@ public class GeoItem extends RealmObject {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isWasToldAbout() {
+        return wasToldAbout;
+    }
+
+    public void setWasToldAbout(boolean wasToldAbout) {
+        this.wasToldAbout = wasToldAbout;
     }
 }

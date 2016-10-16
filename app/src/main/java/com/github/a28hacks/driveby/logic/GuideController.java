@@ -115,7 +115,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                     String text = TextUtils.beautify(searchResult.getExtract());
                     List<String> sentences = TextUtils.splitSentences(text);
                     for (String sentence : sentences) {
-                        if(sentence.trim().length() == 0) continue;
+                        if (sentence.trim().length() == 0) continue;
                         InfoChunk managedChunk = mRealm.copyToRealm(new InfoChunk(sentence, false));
                         infoChunks.add(managedChunk);
                     }
@@ -187,6 +187,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                 if (!infoChunks.get(i).wasTold()) {
                     outputText += infoChunks.get(i).getSentence();
                     infoChunks.get(i).setTold(true);
+                    item.setWasToldAbout(true);
                     break;
                 }
             }
@@ -195,6 +196,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                 if (!infoChunks.get(i).wasTold()) {
                     outputText += infoChunks.get(i).getSentence();
                     infoChunks.get(i).setTold(true);
+                    item.setWasToldAbout(true);
                     break;
                 }
             }
