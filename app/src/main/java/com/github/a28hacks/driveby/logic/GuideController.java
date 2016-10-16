@@ -127,13 +127,12 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
         }
         mRealm.commitTransaction();
 
-        //first item in the list is the nearest, check which has enough text
-        for (GeoItem item : currentItems) {
-            if (!item.getInfoChunks().isEmpty() &&
-                    item.getInfoChunks().get(0).getSentence().length() > 50) {
-                mCurrentItem = item;
-                break;
-            }
+        //try to find a city in currentItems first
+        mCurrentItem = findBestItem(currentItems, "city");
+
+        //if there is no city or all chunks of city were already told, choose something else
+        if (mCurrentItem == null) {
+            mCurrentItem = findBestItem(currentItems, null);
         }
 
         //bind to speech service if needed
@@ -147,7 +146,27 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
 
     }
 
+    private GeoItem findBestItem(List<GeoItem> currentItems, String type) {
+        for (GeoItem item : currentItems) {
+            if (type != null && !item.getType().equalsIgnoreCase(type)) {
+                break;
+            }
+            boolean hasUntoldEntries = !item.getInfoChunks().isEmpty();
+            for (InfoChunk infoChunk : item.getInfoChunks()) {
+                hasUntoldEntries = hasUntoldEntries && !infoChunk.wasTold();
+            }
+            if (hasUntoldEntries) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     private void executeSpeak() {
+        //currently no item? skip speak
+        if (mCurrentItem == null) {
+            return;
+        }
         //get output text from currentItem
         mTTSService.speak(getOutputFrom(mCurrentItem));
         currentlySpeaking = true;
@@ -158,7 +177,8 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
         mRealm.beginTransaction();
         String outputText = "";
         RealmList<InfoChunk> infoChunks = item.getInfoChunks();
-        if (item.getType().equalsIgnoreCase("city")) {
+        if (item.getType() != null
+                && item.getType().equalsIgnoreCase("city")) {
             int startpos = infoChunks.size() > 2 ? 1 : 0;
             for (int i = startpos; i < infoChunks.size(); i++) {
                 outputText = "Welcome to " + item.getTitle() + ".";

@@ -39,7 +39,6 @@ public class SpeechProgressListener extends UtteranceProgressListener {
     @Override
     public void onAudioAvailable(String utteranceId, byte[] audio) {
         super.onAudioAvailable(utteranceId, audio);
-        Log.e(TAG, "onAudioAvailable");
     }
 
     @Override
