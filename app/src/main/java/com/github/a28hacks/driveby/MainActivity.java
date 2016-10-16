@@ -19,10 +19,15 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.github.a28hacks.driveby.audio.TextToSpeechService;
+import com.github.a28hacks.driveby.database.RealmProvider;
 import com.github.a28hacks.driveby.location.DrivebyService;
+import com.github.a28hacks.driveby.model.database.GeoItem;
+import com.github.a28hacks.driveby.model.database.InfoChunk;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -30,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQ_CODE = 1337;
     private static final int TTS_CHECK_CODE = 1338;
 
+    private Realm mRealm;
     private TextToSpeechService ttsService;
     private boolean bound;
 
@@ -40,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     protected EditText etInput;
     @BindView(R.id.btn_speak)
     protected Button speakBtn;
+    @BindView(R.id.btn_reset)
+    protected Button resetBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         checkPermissions();
         checkTTSVoices();
+
+        mRealm = RealmProvider.createRealmInstance(this);
 
         if (isMyServiceRunning(DrivebyService.class)) {
             toggleServicesBtn.setText("Stop Driveby");
@@ -65,6 +75,12 @@ public class MainActivity extends AppCompatActivity {
                 if(bound) {
                     speakText();
                 }
+            }
+        });
+        resetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetHistory();
             }
         });
     }
@@ -85,6 +101,16 @@ public class MainActivity extends AppCompatActivity {
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkIntent, TTS_CHECK_CODE);
+    }
+
+    private void resetHistory(){
+        mRealm.beginTransaction();
+        for(GeoItem item : mRealm.where(GeoItem.class).findAll()) {
+            for(InfoChunk ic : item.getInfoChunks()) {
+                ic.setTold(false);
+            }
+        }
+        mRealm.commitTransaction();
     }
 
     void toggleServices(){
