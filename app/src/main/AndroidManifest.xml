@@ -39,7 +39,7 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-        <service android:name=".ui.widget.UpdateWidgetService"/>
+        <service android:name=".ui.widget.UpdateWidgetService" android:enabled="true"/>
 
         <!-- Needs minSDK 24
         <service

@@ -2,6 +2,7 @@ package com.github.a28hacks.driveby;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,8 @@ import com.github.a28hacks.driveby.database.RealmProvider;
 import com.github.a28hacks.driveby.location.DrivebyService;
 import com.github.a28hacks.driveby.model.database.GeoItem;
 import com.github.a28hacks.driveby.model.database.InfoChunk;
+import com.github.a28hacks.driveby.ui.widget.DriveByWidgetProvider;
+import com.github.a28hacks.driveby.ui.widget.UpdateWidgetService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -122,16 +125,24 @@ public class MainActivity extends AppCompatActivity {
             }
             stopService(new Intent(this, DrivebyService.class));
             stopService(new Intent(this, TextToSpeechService.class));
+            updateWidgets();
             toggleServicesBtn.setText("Start Driveby");
         } else {
             startService(new Intent(this, DrivebyService.class));
             startService(new Intent(this, TextToSpeechService.class));
+            updateWidgets();
             toggleServicesBtn.setText("Stop Driveby");
 
             // Bind to TTSService
             Intent intent = new Intent(this, TextToSpeechService.class);
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
+    }
+
+    private void updateWidgets() {
+        int[] ids = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), DriveByWidgetProvider.class));
+        DriveByWidgetProvider myWidget = new DriveByWidgetProvider();
+        myWidget.onUpdate(this, AppWidgetManager.getInstance(this),ids);
     }
 
     void speakText() {
