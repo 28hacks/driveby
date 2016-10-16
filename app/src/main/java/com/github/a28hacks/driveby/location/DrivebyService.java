@@ -72,6 +72,7 @@ public class DrivebyService extends Service {
     public void onDestroy() {
         Log.e(TAG, "onDestroy");
         super.onDestroy();
+        mGuideController.destroy();
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
                 try {

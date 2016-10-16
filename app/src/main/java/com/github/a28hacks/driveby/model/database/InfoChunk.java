@@ -8,6 +8,15 @@ public class InfoChunk extends RealmObject {
     private String sentence;
     private boolean wasTold;
 
+    public InfoChunk(){
+
+    }
+
+    public InfoChunk(String sentence, boolean wasTold) {
+        this.sentence = sentence;
+        this.wasTold = wasTold;
+    }
+
     public String getSentence() {
         return sentence;
     }

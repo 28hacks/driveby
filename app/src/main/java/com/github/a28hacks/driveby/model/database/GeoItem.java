@@ -1,5 +1,8 @@
 package com.github.a28hacks.driveby.model.database;
 
+import com.github.a28hacks.driveby.model.wiki_api.GeoSearchResult;
+import com.github.a28hacks.driveby.text.TextUtils;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -13,6 +16,18 @@ public class GeoItem extends RealmObject {
     private double longitude;
     private RealmList<InfoChunk> infoChunks;
     private String type;
+
+    public GeoItem() {
+
+    }
+
+    public GeoItem(GeoSearchResult searchResult) {
+        this.id = searchResult.getPageId();
+        this.title = searchResult.getTitle();
+        this.latitude = searchResult.getLat();
+        this.longitude = searchResult.getLon();
+        this.type = searchResult.getType();
+    }
 
     public long getId() {
         return id;

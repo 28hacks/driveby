@@ -2,6 +2,10 @@ package com.github.a28hacks.driveby.text;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +32,7 @@ public class TextUtils {
             "two comprise the state of the Free Hanseatic City of Bremen (official German name: Freie " +
             "Hansestadt Bremen).";
 
-    private static Pattern parenthesis = Pattern.compile(" \\(([^\\)]+)\\)");
+    private static final Pattern parenthesis = Pattern.compile(" \\(([^\\)]+)\\)");
 
     public static String beautify(String input) {
         if (input == null || input.isEmpty()) {
@@ -43,6 +47,22 @@ public class TextUtils {
     public static String cutOutFirstSentence(String input) {
         if (input != null && !input.isEmpty()) {
             return input.substring(input.indexOf(". ") + 2);
+        }
+        return null;
+    }
+
+    public static List<String> splitSentences(String input) {
+        Log.e(TAG, "splitSentences: " + input);
+        if (input != null && !input.isEmpty()) {
+            String[] sentences = input.split("(?<=\\. )");
+            for(String s : sentences) {
+                Log.e(TAG, "splitSentences: " + s);
+            }
+            if(sentences.length == 0) {
+                return Collections.singletonList(input);
+            } else {
+                return Arrays.asList(sentences);
+            }
         }
         return null;
     }

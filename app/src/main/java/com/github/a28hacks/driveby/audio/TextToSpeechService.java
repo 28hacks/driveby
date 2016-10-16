@@ -17,12 +17,12 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
         SpeechProgressListener.OnSpeechDoneListener {
     public static final String ACTION_SPEECH_DONE = "com.github.a28hacks.SPEECH_DONE";
     private static final String TAG = "TextToSpeechService";
+    static final String UTTERANCE_ID = "UTTERANCE_ID";
 
     // Binder given to clients
     private final IBinder mBinder = new TTSBinder();
 
     private TextToSpeech tts;
-    private String text;
     private boolean isInit;
 
     @Override
@@ -30,6 +30,8 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
         Log.e(TAG, "onCreate");
         super.onCreate();
         tts = new TextToSpeech(getApplicationContext(), this);
+        tts.setOnUtteranceProgressListener(new SpeechProgressListener(this));
+        tts.setSpeechRate(0.80f);
     }
 
     @Override
@@ -53,9 +55,6 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
         if (status == TextToSpeech.SUCCESS) {
             int result = tts.setLanguage(Locale.US);
             if (result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED) {
-                if (text != null) {
-                    speak(text);
-                }
                 isInit = true;
             }
         }
@@ -64,15 +63,13 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     /* method which is called from activity / other services */
     public void speak(String text) {
         if (tts != null && isInit) {
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+            tts.speak(text, TextToSpeech.QUEUE_ADD, null, UTTERANCE_ID);
         }
     }
 
     @Override
     public void onSpeechDone(boolean success) {
-        if (success) {
-            sendBroadcast(new Intent(ACTION_SPEECH_DONE));
-        }
+        sendBroadcast(new Intent(ACTION_SPEECH_DONE));
     }
 
     @Override
