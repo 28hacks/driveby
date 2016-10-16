@@ -3,6 +3,8 @@ package com.github.a28hacks.driveby.model.database;
 import com.github.a28hacks.driveby.model.wiki_api.GeoSearchResult;
 import com.github.a28hacks.driveby.text.TextUtils;
 
+import java.util.Date;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -16,6 +18,7 @@ public class GeoItem extends RealmObject {
     private double longitude;
     private RealmList<InfoChunk> infoChunks;
     private String type;
+    private Date firstToldAbout;
 
     public GeoItem() {
 
@@ -75,5 +78,13 @@ public class GeoItem extends RealmObject {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Date getFirstToldAbout() {
+        return firstToldAbout;
+    }
+
+    public void setFirstToldAbout(Date firstToldAbout) {
+        this.firstToldAbout = firstToldAbout;
     }
 }

@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -14,7 +15,12 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,11 +32,14 @@ import com.github.a28hacks.driveby.model.database.GeoItem;
 import com.github.a28hacks.driveby.model.database.InfoChunk;
 import com.github.a28hacks.driveby.ui.widget.DriveByWidgetProvider;
 import com.github.a28hacks.driveby.ui.widget.UpdateWidgetService;
+import com.github.a28hacks.driveby.ui.NotificationController;
+import com.github.a28hacks.driveby.usecase.history.HistoryAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -42,15 +51,11 @@ public class MainActivity extends AppCompatActivity {
     private TextToSpeechService ttsService;
     private boolean bound;
 
+    private HistoryAdapter mHistoryAdapter;
 
-    @BindView(R.id.btn_start_services)
-    protected Button toggleServicesBtn;
-    @BindView(R.id.et_input)
-    protected EditText etInput;
-    @BindView(R.id.btn_speak)
-    protected Button speakBtn;
-    @BindView(R.id.btn_reset)
-    protected Button resetBtn;
+    @BindView(R.id.history_list)
+    RecyclerView mHistoryList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,32 +67,55 @@ public class MainActivity extends AppCompatActivity {
 
         mRealm = RealmProvider.createRealmInstance(this);
 
-        if (isMyServiceRunning(DrivebyService.class)) {
-            toggleServicesBtn.setText("Stop Driveby");
-        }
-
-        toggleServicesBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleServices();
-            }
-        });
-        speakBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(bound) {
-                    speakText();
-                }
-            }
-        });
-        resetBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetHistory();
-            }
-        });
+        mHistoryAdapter = new HistoryAdapter();
+        mHistoryList.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        );
+        mHistoryList.setAdapter(mHistoryAdapter);
+        mHistoryAdapter.setGeoItems(mRealm.where(GeoItem.class)
+                .isNotNull("firstToldAbout")
+                .findAll()
+                .sort("firstToldAbout", Sort.DESCENDING)
+        );
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        if (isMyServiceRunning(DrivebyService.class)) {
+            menu.findItem(R.id.toggle).setTitle("Stop");
+            menu.findItem(R.id.toggle).setIcon(R.drawable.ic_hearing_white_24dp);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toggle:
+                toggleServices();
+                invalidateOptionsMenu();
+                break;
+            case R.id.delete_history:
+                openHistoryResetDialog();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openHistoryResetDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Reset history?")
+                .setMessage("Do you really want to erase all of your history?")
+                .setPositiveButton("Keep it", null)
+                .setNegativeButton("Reset", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        resetHistory();
+                    }
+                })
+                .show();
+    }
 
     @Override
     protected void onStop() {
@@ -106,18 +134,19 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(checkIntent, TTS_CHECK_CODE);
     }
 
-    private void resetHistory(){
+    private void resetHistory() {
         mRealm.beginTransaction();
-        for(GeoItem item : mRealm.where(GeoItem.class).findAll()) {
-            for(InfoChunk ic : item.getInfoChunks()) {
+        for (GeoItem item : mRealm.where(GeoItem.class).findAll()) {
+            for (InfoChunk ic : item.getInfoChunks()) {
                 ic.setTold(false);
             }
+            item.setFirstToldAbout(null);
         }
         mRealm.commitTransaction();
     }
 
-    void toggleServices(){
-        if(isMyServiceRunning(DrivebyService.class)){
+    void toggleServices() {
+        if (isMyServiceRunning(DrivebyService.class)) {
             // Unbind from the service
             if (bound) {
                 unbindService(mConnection);
@@ -125,13 +154,12 @@ public class MainActivity extends AppCompatActivity {
             }
             stopService(new Intent(this, DrivebyService.class));
             stopService(new Intent(this, TextToSpeechService.class));
+            new NotificationController(getApplicationContext()).dismissNotification();
             updateWidgets();
-            toggleServicesBtn.setText("Start Driveby");
         } else {
             startService(new Intent(this, DrivebyService.class));
             startService(new Intent(this, TextToSpeechService.class));
             updateWidgets();
-            toggleServicesBtn.setText("Stop Driveby");
 
             // Bind to TTSService
             Intent intent = new Intent(this, TextToSpeechService.class);
@@ -144,14 +172,6 @@ public class MainActivity extends AppCompatActivity {
         DriveByWidgetProvider myWidget = new DriveByWidgetProvider();
         myWidget.onUpdate(this, AppWidgetManager.getInstance(this),ids);
     }
-
-    void speakText() {
-        String input = etInput.getText().toString();
-        if(!input.isEmpty()){
-            ttsService.speak(input);
-        }
-    }
-
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -202,7 +222,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Defines callbacks for service binding, passed to bindService() */
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override

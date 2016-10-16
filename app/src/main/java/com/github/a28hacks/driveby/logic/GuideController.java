@@ -26,6 +26,7 @@ import com.github.a28hacks.driveby.text.TextUtils;
 import com.github.a28hacks.driveby.ui.NotificationController;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -115,7 +116,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                     String text = TextUtils.beautify(searchResult.getExtract());
                     List<String> sentences = TextUtils.splitSentences(text);
                     for (String sentence : sentences) {
-                        if(sentence.trim().length() == 0) continue;
+                        if (sentence.trim().length() == 0) continue;
                         InfoChunk managedChunk = mRealm.copyToRealm(new InfoChunk(sentence, false));
                         infoChunks.add(managedChunk);
                     }
@@ -187,6 +188,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                 if (!infoChunks.get(i).wasTold()) {
                     outputText += infoChunks.get(i).getSentence();
                     infoChunks.get(i).setTold(true);
+                    item.setFirstToldAbout(new Date());
                     break;
                 }
             }
@@ -195,6 +197,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                 if (!infoChunks.get(i).wasTold()) {
                     outputText += infoChunks.get(i).getSentence();
                     infoChunks.get(i).setTold(true);
+                    item.setFirstToldAbout(new Date());
                     break;
                 }
             }
