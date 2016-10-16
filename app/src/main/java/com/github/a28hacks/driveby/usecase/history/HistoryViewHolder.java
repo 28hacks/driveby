@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import com.github.a28hacks.driveby.R;
 import com.github.a28hacks.driveby.model.database.GeoItem;
-import com.github.a28hacks.driveby.model.database.InfoChunk;
+
+import java.text.SimpleDateFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,8 +17,16 @@ import butterknife.ButterKnife;
 
 public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
+    private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+
     @BindView(R.id.title)
     TextView title;
+
+    @BindView(R.id.first_chunk)
+    TextView firstChunk;
+
+    @BindView(R.id.date)
+    TextView date;
 
     public HistoryViewHolder(View itemView) {
         super(itemView);
@@ -27,11 +36,12 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
     public void onBind(final GeoItem geoItem) {
         title.setText(geoItem.getTitle());
 
-        for (InfoChunk infoChunk : geoItem.getInfoChunks()) {
-            if (infoChunk.wasTold()) {
-
-            }
+        if (!geoItem.getInfoChunks().isEmpty()) {
+            firstChunk.setText(geoItem.getInfoChunks().get(0).getSentence());
         }
+
+        String formatedDate = DATE_FORMAT.format(geoItem.getFirstToldAbout());
+        date.setText(formatedDate);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

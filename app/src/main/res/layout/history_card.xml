@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp">
+    android:layout_marginBottom="4dp"
+    android:layout_marginTop="4dp"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
         android:id="@+id/wrapper"
@@ -22,6 +24,14 @@
             tools:text="Bremen"/>
 
         <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            tools:text="First heard about: 16.10.2016"/>
+
+        <TextView
+            android:id="@+id/first_chunk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8sp"
