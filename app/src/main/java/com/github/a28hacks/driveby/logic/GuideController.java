@@ -23,6 +23,7 @@ import com.github.a28hacks.driveby.model.wiki_api.QueryResult;
 import com.github.a28hacks.driveby.model.wiki_api.WikipediaResult;
 import com.github.a28hacks.driveby.network.WikipediaService;
 import com.github.a28hacks.driveby.text.TextUtils;
+import com.github.a28hacks.driveby.ui.NotificationController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class GuideController implements Callback<WikipediaResult>, DbLocationAdapter.LocationChangedListener{
+public class GuideController implements Callback<WikipediaResult>, DbLocationAdapter.LocationChangedListener {
 
     private static final String TAG = "GuideController";
 
@@ -45,6 +46,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
     private final Realm mRealm;
     private GeoItem mCurrentItem;
     private Context mContext;
+    private NotificationController mNotificationController;
     private TextToSpeechService mTTSService;
     private Call<WikipediaResult> pendingCall;
     private boolean boundToSpeechService;
@@ -59,10 +61,11 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(TextToSpeechService.ACTION_SPEECH_DONE);
-        context.registerReceiver(mBroadcastReceiver,filter);
+        context.registerReceiver(mBroadcastReceiver, filter);
 
         mRealm = RealmProvider.createRealmInstance(context);
         mWikipediaService = retrofit.create(WikipediaService.class);
+        mNotificationController = new NotificationController(context);
     }
 
     public void processLocation(Location location) {
@@ -94,22 +97,24 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
         mRealm.beginTransaction();
         for (String s : pages.keySet()) {
             GeoSearchResult searchResult = pages.get(s);
-            if(searchResult.getPageId() == 0) {continue;}
+            if (searchResult.getPageId() == 0) {
+                continue;
+            }
             Log.d(TAG, "processPageResult: " + s + " - " + searchResult.getExtract());
 
             RealmQuery<GeoItem> query = mRealm.where(GeoItem.class);
-            query.equalTo("id",searchResult.getPageId());
+            query.equalTo("id", searchResult.getPageId());
             GeoItem item = query.findFirst();
-            if(item != null) {
+            if (item != null) {
                 Log.e(TAG, "processPageResult: Query Result = " + item.getId());
                 RealmList<InfoChunk> infoChunks;
-                if((item.getInfoChunks() == null || item.getInfoChunks().isEmpty()) &&
+                if ((item.getInfoChunks() == null || item.getInfoChunks().isEmpty()) &&
                         searchResult.getExtract() != null &&
                         !searchResult.getExtract().isEmpty()) {
                     infoChunks = new RealmList<>();
                     List<String> sentences = TextUtils.splitSentences(searchResult.getExtract());
-                    for(String sentence : sentences) {
-                        InfoChunk managedChunk = mRealm.copyToRealm(new InfoChunk(sentence,false));
+                    for (String sentence : sentences) {
+                        InfoChunk managedChunk = mRealm.copyToRealm(new InfoChunk(sentence, false));
                         infoChunks.add(managedChunk);
                     }
                     item.setInfoChunks(infoChunks);
@@ -123,25 +128,30 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
         mRealm.commitTransaction();
 
         //first item in the list is the nearest, check which has enough text
-        for(GeoItem item : currentItems) {
-            if(!item.getInfoChunks().isEmpty() &&
-                    item.getInfoChunks().get(0).getSentence().length() > 50){
+        for (GeoItem item : currentItems) {
+            if (!item.getInfoChunks().isEmpty() &&
+                    item.getInfoChunks().get(0).getSentence().length() > 50) {
                 mCurrentItem = item;
                 break;
             }
         }
 
         //bind to speech service if needed
-        if(!boundToSpeechService) {
+        if (!boundToSpeechService) {
             // Bind to TTSService
             Intent intent = new Intent(mContext, TextToSpeechService.class);
             mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         } else {
-            //get output text from currentItem
-            mTTSService.speak(getOutputFrom(mCurrentItem));
-            currentlySpeaking = true;
+            executeSpeak();
         }
 
+    }
+
+    private void executeSpeak() {
+        //get output text from currentItem
+        mTTSService.speak(getOutputFrom(mCurrentItem));
+        currentlySpeaking = true;
+        mNotificationController.displayGeoItem(mCurrentItem);
     }
 
     public String getOutputFrom(GeoItem item) {
@@ -178,12 +188,12 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
 
         //create entry in db only when it's a new datapoint
         mRealm.beginTransaction();
-        for(GeoSearchResult result : items) {
+        for (GeoSearchResult result : items) {
             Log.d(TAG, "processSearchResult: " + result.getPageId() + result.getTitle());
             RealmQuery<GeoItem> query = mRealm.where(GeoItem.class);
-            query.equalTo("id",result.getPageId());
+            query.equalTo("id", result.getPageId());
             GeoItem item = query.findFirst();
-            if(item == null) {
+            if (item == null) {
                 item = new GeoItem(result);
                 mRealm.copyToRealmOrUpdate(item);
             }
@@ -195,7 +205,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
         for (GeoSearchResult geoSearchResult : items) {
             ids.append(geoSearchResult.getPageId()).append("|");
         }
-        if(currentlySpeaking) {
+        if (currentlySpeaking) {
             pendingCall = mWikipediaService.getExtractText(ids.toString());
         } else {
             mWikipediaService.getExtractText(ids.toString()).enqueue(this);
@@ -231,9 +241,9 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG, "onReceive: " + intent.getAction());
-            if(intent.getAction().equals(TextToSpeechService.ACTION_SPEECH_DONE)){
+            if (intent.getAction().equals(TextToSpeechService.ACTION_SPEECH_DONE)) {
                 currentlySpeaking = false;
-                if(pendingCall != null) {
+                if (pendingCall != null) {
                     pendingCall.enqueue(GuideController.this);
                     pendingCall = null;
                 }
@@ -241,7 +251,9 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
         }
     };
 
-    /** Defines callbacks for service binding, passed to bindService() */
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -251,11 +263,9 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
             TextToSpeechService.TTSBinder binder = (TextToSpeechService.TTSBinder) service;
             mTTSService = binder.getService();
 
-            if(!boundToSpeechService) {
-                //get output text from currentItem
-                mTTSService.speak(getOutputFrom(mCurrentItem));
+            if (!boundToSpeechService) {
                 boundToSpeechService = true;
-                currentlySpeaking = true;
+                executeSpeak();
             }
         }
 
