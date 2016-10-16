@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -89,10 +91,24 @@ public class MainActivity extends AppCompatActivity {
                 invalidateOptionsMenu();
                 break;
             case R.id.delete_history:
-                resetHistory();
+                openHistoryResetDialog();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openHistoryResetDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Reset history?")
+                .setMessage("Do you really want to erase all of your history?")
+                .setPositiveButton("Keep it", null)
+                .setNegativeButton("Reset", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        resetHistory();
+                    }
+                })
+                .show();
     }
 
     @Override
