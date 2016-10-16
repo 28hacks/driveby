@@ -19,6 +19,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".LicensesActivity"
+            android:parentActivityName=".MainActivity"/>
+
         <service android:name=".location.DrivebyService" android:enabled="true"/>
         <service android:name=".audio.TextToSpeechService" android:enabled="true"/>
 

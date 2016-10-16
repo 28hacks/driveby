@@ -11,4 +11,9 @@
         android:icon="@drawable/ic_delete_white_24dp"
         android:title="Reset history"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/licenses"
+        android:title="Licenses"
+        app:showAsAction="never"/>
 </menu>

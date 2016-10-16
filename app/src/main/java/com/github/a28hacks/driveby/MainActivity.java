@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.delete_history:
                 openHistoryResetDialog();
                 break;
+            case R.id.licenses:
+                showLicenses();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -143,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
             item.setFirstToldAbout(null);
         }
         mRealm.commitTransaction();
+    }
+
+    private void showLicenses() {
+        startActivity(new Intent(this, LicensesActivity.class));
     }
 
     void toggleServices() {
