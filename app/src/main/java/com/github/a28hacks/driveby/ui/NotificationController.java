@@ -20,9 +20,12 @@ public class NotificationController {
 
     private static final int NOTIFICATION_ID = 100;
     private Context mContext;
+    private NotificationManager mNotificationManager;
 
     public NotificationController(Context context) {
         mContext = context;
+        mNotificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     public void displayGeoItem(GeoItem geoItem) {
@@ -30,10 +33,13 @@ public class NotificationController {
         showNotification(notification);
     }
 
+    public void dismissNotification() {
+        mNotificationManager.cancel(NOTIFICATION_ID);
+    }
+
     private void showNotification(Notification notification) {
-        NotificationManager notificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID, notification);
+
+        mNotificationManager.notify(NOTIFICATION_ID, notification);
     }
 
     private Notification createNotification(String title) {

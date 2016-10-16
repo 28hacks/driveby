@@ -263,6 +263,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
             Log.e(TAG, "onReceive: " + intent.getAction());
             if (intent.getAction().equals(TextToSpeechService.ACTION_SPEECH_DONE)) {
                 currentlySpeaking = false;
+                mNotificationController.dismissNotification();
                 if (pendingCall != null) {
                     pendingCall.enqueue(GuideController.this);
                     pendingCall = null;
