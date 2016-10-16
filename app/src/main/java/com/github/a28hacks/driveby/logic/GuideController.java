@@ -148,8 +148,8 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
 
     private GeoItem findBestItem(List<GeoItem> currentItems, String type) {
         for (GeoItem item : currentItems) {
-            if (type != null && !item.getType().equalsIgnoreCase(type)) {
-                break;
+            if (type != null && !type.equalsIgnoreCase(item.getType())) {
+                continue;
             }
             boolean hasUntoldEntries = !item.getInfoChunks().isEmpty();
             for (InfoChunk infoChunk : item.getInfoChunks()) {
