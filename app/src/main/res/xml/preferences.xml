@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="@string/pref_cat_key_text_to_speech"
+        android:title="@string/pref_cat_title_text_to_speech">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_key_tts_enable"
+            android:summary="@string/pref_summary_tts_enable"
+            android:title="@string/pref_title_tts_enable"/>
+
+        <ListPreference
+            android:defaultValue="@string/pref_language_default"
+            android:dependency="@string/pref_key_tts_enable"
+            android:entries="@array/settings_language_entries"
+            android:entryValues="@array/settings_language_values"
+            android:key="@string/pref_key_tss_language"
+            android:summary="@string/pref_summary_language"
+            android:title="@string/pref_title_language"/>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/pref_key_tts_enable"
+            android:key="@string/pref_key_tss_slower"
+            android:summary="@string/pref_summary_tts_slower"
+            android:title="@string/pref_title_tts_slower"/>
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/pref_cat_key_misc"
+        android:title="@string/pref_cat_title_misc">
+
+        <com.github.a28hacks.driveby.usecase.settings.ColoredTitlePreference
+            android:key="@string/pref_history_action_delete"
+            android:summary="@string/pref_summary_delete_history"
+            android:title="@string/pref_title_delete_history"/>
+
+        <Preference
+            android:key="@string/pref_show_license_action"
+            android:summary="@string/pref_summary_show_license"
+            android:title="@string/pref_title_show_license"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

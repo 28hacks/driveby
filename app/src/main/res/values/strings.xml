@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">DriveBy</string>
+
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_key_tts_enable">tts_enabled</string>
+    <string name="pref_key_tss_language">tts_language</string>
+    <string name="pref_key_tss_slower">tts_slower</string>
+    <string name="pref_cat_key_text_to_speech">text_to_speech</string>
+    <string name="pref_cat_key_misc">misc</string>
+
+    <string name="pref_history_action_delete">history_action_delete</string>
+    <string name="pref_show_license_action">show_license_action</string>
+    <string name="pref_language_default">de</string>
+    <string name="pref_cat_title_text_to_speech">Sprachausgabe</string>
+    <string name="pref_summary_tts_enable">Sprachausgabe aktivieren</string>
+    <string name="pref_title_tts_enable">Aktiv</string>
+    <string name="pref_summary_language">In welcher Sprache sollen die Informationen vorgelesen werden?</string>
+    <string name="pref_title_language">Sprache</string>
+    <string name="pref_summary_tts_slower">Informationen langsamer vorlesen</string>
+    <string name="pref_title_tts_slower">Langsames Vorlesen</string>
+    <string name="pref_cat_title_misc">Sonstiges</string>
+    <string name="pref_summary_delete_history">Besuchte Orte zurücksetzen</string>
+    <string name="pref_title_delete_history">Verlauf löschen</string>
+    <string name="pref_summary_show_license">Informationen zu genutzen Bibliotheken</string>
+    <string name="pref_title_show_license">Lizenzen</string>
+
+
 </resources>

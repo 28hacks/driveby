@@ -6,14 +6,9 @@
         android:icon="@drawable/ic_hearing_crossed_white_24px"
         android:title="Start"
         app:showAsAction="always"/>
-    <item
-        android:id="@+id/delete_history"
-        android:icon="@drawable/ic_delete_white_24dp"
-        android:title="Reset history"
-        app:showAsAction="always"/>
 
     <item
-        android:id="@+id/licenses"
-        android:title="Licenses"
+        android:id="@+id/settings"
+        android:title="Optionen"
         app:showAsAction="never"/>
 </menu>

@@ -11,40 +11,58 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".usecase.settings.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
+            android:name=".LicensesActivity"
+            android:parentActivityName=".usecase.settings.SettingsActivity"
+            android:theme="@style/AppTheme"/>
 
-        <activity android:name=".LicensesActivity"
-            android:parentActivityName=".MainActivity"/>
-
-        <service android:name=".location.DrivebyService" android:enabled="true"/>
-        <service android:name=".audio.TextToSpeechService" android:enabled="true"/>
+        <service
+            android:name=".location.DrivebyService"
+            android:enabled="true"/>
+        <service
+            android:name=".audio.TextToSpeechService"
+            android:enabled="true"/>
 
         <!-- Widget -->
 
-        <activity android:name=".ui.widget.ConfigureWidgetActivtiy"
+        <activity
+            android:name=".ui.widget.ConfigureWidgetActivtiy"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
 
-        <receiver android:name=".ui.widget.DriveByWidgetProvider" >
+        <receiver android:name=".ui.widget.DriveByWidgetProvider">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info" />
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info"/>
         </receiver>
 
-        <service android:name=".ui.widget.UpdateWidgetService" android:enabled="true"/>
+        <service
+            android:name=".ui.widget.UpdateWidgetService"
+            android:enabled="true"/>
 
-        <!-- Needs minSDK 24
+        <!--
+        Needs minSDK 24
         <service
             android:name=".location.DrivebyService"
             android:icon="@drawable/ic_hearing_white_36dp"
