@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_key_tts_enable">tts_enabled</string>
+    <string name="pref_key_tss_language">tts_language</string>
+    <string name="pref_key_tss_slower">tts_slower</string>
+    <string name="pref_cat_key_text_to_speech">text_to_speech</string>
+    <string name="pref_cat_key_misc">misc</string>
+    <string name="pref_key_history_action_delete">history_action_delete</string>
+    <string name="pref_key_show_license_action">show_license_action</string>
+</resources>

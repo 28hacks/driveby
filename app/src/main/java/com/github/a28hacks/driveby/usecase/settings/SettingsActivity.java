@@ -26,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment()).commit();
 
-        setTitle("Settings");
+        setTitle(getString(R.string.activity_settings_title));
     }
 
     public static Intent createIntent(Context context) {
@@ -44,7 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             mRealm = RealmProvider.createRealmInstance(getActivity());
 
-            addPrefClickListener(R.string.pref_history_action_delete,
+            addPrefClickListener(R.string.pref_key_history_action_delete,
                     new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
@@ -52,7 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
                             return true;
                         }
                     });
-            addPrefClickListener(R.string.pref_show_license_action,
+            addPrefClickListener(R.string.pref_key_show_license_action,
                     new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
@@ -72,15 +72,16 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void showResetHistoryDialog() {
             new AlertDialog.Builder(getActivity())
-                    .setTitle("Reset history?")
-                    .setMessage("Do you really want to erase all of your history?")
-                    .setPositiveButton("Keep it", null)
-                    .setNegativeButton("Reset", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            resetHistory();
-                        }
-                    })
+                    .setTitle(R.string.dialog_reset_history_title)
+                    .setMessage(R.string.dialog_reset_history_message)
+                    .setPositiveButton(R.string.dialog_reset_history_keep, null)
+                    .setNegativeButton(R.string.dialog_reset_history_reset,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    resetHistory();
+                                }
+                            })
                     .show();
         }
 

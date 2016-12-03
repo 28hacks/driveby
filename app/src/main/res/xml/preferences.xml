@@ -35,12 +35,12 @@
         android:title="@string/pref_cat_title_misc">
 
         <com.github.a28hacks.driveby.usecase.settings.ColoredTitlePreference
-            android:key="@string/pref_history_action_delete"
+            android:key="@string/pref_key_history_action_delete"
             android:summary="@string/pref_summary_delete_history"
             android:title="@string/pref_title_delete_history"/>
 
         <Preference
-            android:key="@string/pref_show_license_action"
+            android:key="@string/pref_key_show_license_action"
             android:summary="@string/pref_summary_show_license"
             android:title="@string/pref_title_show_license"/>
 

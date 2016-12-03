@@ -2,7 +2,6 @@ package com.github.a28hacks.driveby;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 /**
@@ -16,9 +15,6 @@ public class LicensesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_licenses);
 
-         ActionBar ab = getSupportActionBar();
-        if(ab != null) {
-            ab.setTitle("Licenses");
-        }
+        setTitle(getString(R.string.activity_licenses_title));
     }
 }

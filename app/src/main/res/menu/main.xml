@@ -4,11 +4,11 @@
     <item
         android:id="@+id/toggle"
         android:icon="@drawable/ic_hearing_crossed_white_24px"
-        android:title="Start"
+        android:title="@string/action_start"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/settings"
-        android:title="Optionen"
+        android:title="@string/action_settings"
         app:showAsAction="never"/>
 </menu>
