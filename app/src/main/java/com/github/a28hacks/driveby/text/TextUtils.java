@@ -2,12 +2,10 @@ package com.github.a28hacks.driveby.text;
 
 import android.util.Log;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Locale;
 
 /**
  * Created by stefan on 15.10.16.
@@ -17,9 +15,19 @@ public class TextUtils {
 
     private static final String TAG = "TextUtils";
 
-    private static final Pattern parenthesis = Pattern.compile(" \\(([^\\)]+)\\)");
-    private static final Pattern brokenSentence = Pattern.compile("((?<=\\. )|(?<=\\.((\\r\\n)|(\\n))))[^\\(]*\\)\\.*");
-    private static final String sentenceEnd = "(?<=\\. )|(?<=\\.((\\r\\n)|(\\n)))";
+    private enum BracketPair {
+        Round('(',')'), Normal('[',']');
+
+        char open;
+        char close;
+
+        BracketPair(char open, char close) {
+            this.open = open;
+            this.close = close;
+        }
+    }
+
+    private static BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.GERMANY);
 
     public static String beautify(String input) {
         if (input == null || input.isEmpty()) {
@@ -27,42 +35,47 @@ public class TextUtils {
         }
 
         String s = extractParenthesis(input);
-               s = killBrokenSentences(s);
 
         return s;
     }
 
-    public static String cutOutFirstSentence(String input) {
-        if (input != null && !input.isEmpty()) {
-            return input.substring(input.indexOf(". ") + 2);
-        }
-        return null;
-    }
-
     public static List<String> splitSentences(String input) {
+
         Log.e(TAG, "splitSentences: " + input);
+        List<String> sentences = new ArrayList<>();
         if (input != null && !input.isEmpty()) {
-            //match for ". ", ".\n", ".\r\n"
-            String[] sentences = input.split(sentenceEnd);
-            for(String s : sentences) {
-                Log.e(TAG, "splitSentences: " + s);
-            }
-            if(sentences.length == 0) {
-                return Collections.singletonList(input);
-            } else {
-                return Arrays.asList(sentences);
+            iterator.setText(input);
+            int start = iterator.first();
+            for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator.next()) {
+                sentences.add(input.substring(start,end));
             }
         }
-        return null;
+        return sentences;
     }
 
     private static String extractParenthesis(String input) {
-        Matcher m = parenthesis.matcher(input);
-        return m.replaceAll("");
-    }
 
-    private static String killBrokenSentences(String input) {
-        Matcher m = brokenSentence.matcher(input);
-        return m.replaceAll("");
+        String result = input;
+
+        for(BracketPair pair : BracketPair.values()) {
+            //search for last opening bracket
+            int start = result.lastIndexOf(pair.open);
+            int end;
+
+            while (start != -1) {
+                //remove text upto to first closing bracket
+                end = result.indexOf(pair.close, start);
+
+                //catch broken brackets
+                if(end == -1) {
+                    end = result.length();
+                }
+
+                result = result.replace(result.substring(start,end+1), "");
+                start = result.lastIndexOf(pair.open);
+            }
+        }
+
+        return result;
     }
 }
