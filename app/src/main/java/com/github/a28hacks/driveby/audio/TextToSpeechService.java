@@ -31,7 +31,7 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
         super.onCreate();
         tts = new TextToSpeech(getApplicationContext(), this);
         tts.setOnUtteranceProgressListener(new SpeechProgressListener(this));
-        tts.setSpeechRate(0.80f);
+        //tts.setSpeechRate(0.80f);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.US);
+            int result = tts.setLanguage(Locale.GERMAN);
             if (result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED) {
                 isInit = true;
             }

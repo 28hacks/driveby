@@ -1,14 +1,12 @@
 package com.github.a28hacks.driveby.logic;
 
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.icu.text.IDNA;
 import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
@@ -55,7 +53,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
 
     public GuideController(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://en.wikipedia.org/w/")
+                .baseUrl("https://de.wikipedia.org/w/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         this.mContext = context;
