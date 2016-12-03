@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
+import com.github.a28hacks.driveby.usecase.settings.UserSettings;
+
 import java.util.Locale;
 
 /**
@@ -24,6 +26,7 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
 
     private TextToSpeech tts;
     private boolean isInit;
+    private Locale locale;
 
     @Override
     public void onCreate() {
@@ -31,7 +34,14 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
         super.onCreate();
         tts = new TextToSpeech(getApplicationContext(), this);
         tts.setOnUtteranceProgressListener(new SpeechProgressListener(this));
-        //tts.setSpeechRate(0.80f);
+
+        UserSettings settings = new UserSettings(this);
+
+        if(settings.isSlowTTSEnabled()) {
+            tts.setSpeechRate(0.80f);
+        }
+
+        locale = settings.getTTSLanguage();
     }
 
     @Override
@@ -53,7 +63,7 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.GERMAN);
+            int result = tts.setLanguage(locale);
             if (result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED) {
                 isInit = true;
             }

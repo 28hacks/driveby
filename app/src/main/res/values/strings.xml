@@ -26,5 +26,7 @@
     <string name="dialog_reset_history_keep">Keep it</string>
     <string name="dialog_reset_history_reset">Reset</string>
 
+    <string name="beautify_text_welcome_in">Welcome in</string>
+
 
 </resources>

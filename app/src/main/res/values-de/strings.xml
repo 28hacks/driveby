@@ -25,4 +25,6 @@
     <string name="dialog_reset_history_message">Wirklich den kompletten Verlauf löschen?</string>
     <string name="dialog_reset_history_keep">Behalten</string>
     <string name="dialog_reset_history_reset">Löschen</string>
+
+    <string name="beautify_text_welcome_in">Willkommen in</string>
 </resources>

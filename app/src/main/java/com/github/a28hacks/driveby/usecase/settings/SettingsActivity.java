@@ -3,6 +3,8 @@ package com.github.a28hacks.driveby.usecase.settings;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -14,6 +16,8 @@ import com.github.a28hacks.driveby.R;
 import com.github.a28hacks.driveby.database.RealmProvider;
 import com.github.a28hacks.driveby.model.database.GeoItem;
 import com.github.a28hacks.driveby.model.database.InfoChunk;
+
+import java.util.Locale;
 
 import io.realm.Realm;
 
@@ -60,6 +64,29 @@ public class SettingsActivity extends AppCompatActivity {
                             return true;
                         }
                     });
+
+            addPrefChangeListener(R.string.pref_key_tss_language, new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if(newValue instanceof String) {
+                        setApplicationLocale((String) newValue);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+        }
+
+        public void setApplicationLocale(String lang) {
+            Locale myLocale = new Locale(lang);
+            Resources res = getResources();
+            Configuration conf = res.getConfiguration();
+            conf.setLocale(myLocale);
+            res.updateConfiguration(conf, res.getDisplayMetrics());
+            Intent refresh = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(refresh);
+            getActivity().finish();
         }
 
         private void addPrefClickListener(int key, Preference.OnPreferenceClickListener listener) {
@@ -68,6 +95,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void showLicenses() {
             startActivity(new Intent(getActivity(), LicensesActivity.class));
+        }
+
+        private void addPrefChangeListener(int key, Preference.OnPreferenceChangeListener listener) {
+            findPreference(getString(key)).setOnPreferenceChangeListener(listener);
         }
 
         private void showResetHistoryDialog() {

@@ -11,6 +11,7 @@ import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.github.a28hacks.driveby.R;
 import com.github.a28hacks.driveby.audio.TextToSpeechService;
 import com.github.a28hacks.driveby.database.RealmProvider;
 import com.github.a28hacks.driveby.location.DbLocationAdapter;
@@ -22,6 +23,7 @@ import com.github.a28hacks.driveby.model.wiki_api.WikipediaResult;
 import com.github.a28hacks.driveby.network.WikipediaService;
 import com.github.a28hacks.driveby.text.TextUtils;
 import com.github.a28hacks.driveby.ui.NotificationController;
+import com.github.a28hacks.driveby.usecase.settings.UserSettings;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +45,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
 
     private final WikipediaService mWikipediaService;
     private final Realm mRealm;
+    private final UserSettings settings;
     private GeoItem mCurrentItem;
     private Context mContext;
     private NotificationController mNotificationController;
@@ -52,8 +55,9 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
     private boolean currentlySpeaking;
 
     public GuideController(Context context) {
+        this.settings = new UserSettings(context);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://de.wikipedia.org/w/")
+                .baseUrl("https://" + settings.getTTSLanguage() + ".wikipedia.org/w/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         this.mContext = context;
@@ -182,7 +186,8 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                 && item.getType().equalsIgnoreCase("city")) {
             int startpos = infoChunks.size() > 2 ? 1 : 0;
             for (int i = startpos; i < infoChunks.size(); i++) {
-                outputText = "Welcome to " + item.getTitle() + ".";
+                outputText = mContext.getString(R.string.beautify_text_welcome_in)
+                        + " " + item.getTitle() + ". ";
                 if (!infoChunks.get(i).wasTold()) {
                     outputText += infoChunks.get(i).getSentence();
                     infoChunks.get(i).setTold(true);
