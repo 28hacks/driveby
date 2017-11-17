@@ -33,6 +33,7 @@ import java.util.Map;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,9 +57,14 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
 
     public GuideController(Context context) {
         this.settings = new UserSettings(context);
+
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://" + settings.getTTSLanguage() + ".wikipedia.org/w/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
                 .build();
         this.mContext = context;
 
@@ -116,7 +122,7 @@ public class GuideController implements Callback<WikipediaResult>, DbLocationAda
                         !searchResult.getExtract().isEmpty()) {
                     infoChunks = new RealmList<>();
                     String text = TextUtils.beautify(searchResult.getExtract());
-                    List<String> sentences = TextUtils.splitSentences(text);
+                    List<String> sentences = TextUtils.splitSentences(text,settings.getTTSLanguage());
                     for (String sentence : sentences) {
                         if (sentence.trim().length() == 0) continue;
                         InfoChunk managedChunk = mRealm.copyToRealm(new InfoChunk(sentence, false));
