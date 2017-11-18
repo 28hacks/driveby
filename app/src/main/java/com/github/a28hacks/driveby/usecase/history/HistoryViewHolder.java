@@ -10,6 +10,7 @@ import com.github.a28hacks.driveby.R;
 import com.github.a28hacks.driveby.model.database.GeoItem;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,7 +18,7 @@ import butterknife.ButterKnife;
 
 public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
-    private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+    private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
 
     @BindView(R.id.title)
     TextView title;
@@ -46,7 +47,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "https://en.m.wikipedia.org/?curid=" + geoItem.getId();
+                String url = "https://" + geoItem.getLanguageCode() + ".m.wikipedia.org/?curid=" + geoItem.getId();
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 itemView.getContext().startActivity(i);

@@ -18,17 +18,19 @@ public class GeoItem extends RealmObject {
     private RealmList<InfoChunk> infoChunks;
     private String type;
     private Date firstToldAbout;
+    private String languageCode;
 
     public GeoItem() {
 
     }
 
-    public GeoItem(GeoSearchResult searchResult) {
+    public GeoItem(GeoSearchResult searchResult, String languageCode) {
         this.id = searchResult.getPageId();
         this.title = searchResult.getTitle();
         this.latitude = searchResult.getLat();
         this.longitude = searchResult.getLon();
         this.type = searchResult.getType();
+        this.languageCode = languageCode;
     }
 
     public long getId() {
@@ -87,4 +89,11 @@ public class GeoItem extends RealmObject {
         this.firstToldAbout = firstToldAbout;
     }
 
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
 }

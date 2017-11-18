@@ -78,7 +78,7 @@ public class WikipediaRepository {
     }
 
     private GeoItem createGeoItem(GeoSearchResult result) {
-        GeoItem item = new GeoItem(result);
+        GeoItem item = new GeoItem(result, mLanguage.getLanguage());
         RealmList<InfoChunk> infoChunks;
         if ((item.getInfoChunks() == null || item.getInfoChunks().isEmpty()) &&
                 result.getExtract() != null &&

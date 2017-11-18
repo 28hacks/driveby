@@ -26,11 +26,22 @@ import com.github.a28hacks.driveby.model.database.GeoItem;
 import com.github.a28hacks.driveby.ui.NotificationController;
 import com.github.a28hacks.driveby.ui.widget.DriveByWidgetProvider;
 import com.github.a28hacks.driveby.usecase.history.HistoryAdapter;
+import com.github.a28hacks.driveby.usecase.history.SectionedRecyclerViewAdapter;
 import com.github.a28hacks.driveby.usecase.settings.SettingsActivity;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import io.realm.Sort;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQ_CODE = 1337;
     private static final int TTS_CHECK_CODE = 1338;
 
+    private final DateTimeFormatter dateFormat = DateTimeFormat.longDate()
+                                                        .withLocale(Locale.getDefault());
     private Realm mRealm;
     private TextToSpeechService ttsService;
     private boolean bound;
@@ -63,12 +76,53 @@ public class MainActivity extends AppCompatActivity {
         mHistoryList.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         );
-        mHistoryList.setAdapter(mHistoryAdapter);
-        mHistoryAdapter.setGeoItems(mRealm.where(GeoItem.class)
+
+        //Add history adapter to the sectionAdapter
+        final SectionedRecyclerViewAdapter mSectionedAdapter = new
+                SectionedRecyclerViewAdapter(this,R.layout.history_section,R.id.section_text,mHistoryAdapter);
+
+        //Apply this adapter to the RecyclerView
+        mHistoryList.setAdapter(mSectionedAdapter);
+
+        RealmResults<GeoItem> geoItems = mRealm.where(GeoItem.class)
                 .isNotNull("firstToldAbout")
                 .findAll()
-                .sort("firstToldAbout", Sort.DESCENDING)
-        );
+                .sort("firstToldAbout", Sort.DESCENDING);
+
+        mSectionedAdapter.setSections(calculateDailySections(geoItems));
+
+        geoItems.addChangeListener(new RealmChangeListener<RealmResults<GeoItem>>() {
+            @Override
+            public void onChange(RealmResults<GeoItem> elements) {
+                mSectionedAdapter.setSections(calculateDailySections(elements));
+            }
+        });
+
+        mHistoryAdapter.setGeoItems(geoItems);
+    }
+
+    private SectionedRecyclerViewAdapter.Section[] calculateDailySections(RealmResults<GeoItem> items) {
+        List<SectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
+
+        if(items.size() > 0) {
+            DateTime currentDate = new DateTime(items.get(0).getFirstToldAbout());
+            sections.add(new SectionedRecyclerViewAdapter.Section(0, dateFormat.print(currentDate)));
+
+            DateTime comparisonDate;
+
+            for (int i = 1; i < items.size(); i++) {
+                GeoItem item = items.get(i);
+                comparisonDate = new DateTime(item.getFirstToldAbout());
+
+                if(!currentDate.withTimeAtStartOfDay()
+                        .equals(comparisonDate.withTimeAtStartOfDay())) {
+                    currentDate = comparisonDate;
+                    sections.add(new SectionedRecyclerViewAdapter.Section(i, dateFormat.print(currentDate)));
+                }
+            }
+        }
+
+        return sections.toArray(new SectionedRecyclerViewAdapter.Section[0]);
     }
 
     @Override

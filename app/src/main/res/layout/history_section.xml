@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <View
+        android:layout_toLeftOf="@id/section_text"
+        android:layout_margin="16dp"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="1dp"/>
+
+    <TextView
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="@android:color/transparent"
+        android:textSize="16sp"
+        android:id="@+id/section_text"
+        android:textStyle="bold"
+        tools:text="Dienstag 01.02.2017"/>
+
+    <View
+        android:layout_toRightOf="@id/section_text"
+        android:layout_centerInParent="true"
+        android:layout_margin="16dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimaryDark"
+        android:layout_height="1dp"/>
+
+</RelativeLayout>
