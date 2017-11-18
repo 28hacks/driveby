@@ -15,6 +15,7 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmList;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -29,10 +30,16 @@ public class WikipediaRepository {
 
     private final WikipediaService mWikipediaService;
     private final Realm mRealm;
+    private final Locale mLanguage;
 
-    public WikipediaRepository(String language) {
+    public WikipediaRepository(Locale language) {
+        mLanguage = language;
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://" + language + ".wikipedia.org/w/")
+                .client(httpClient)
+                .baseUrl("https://" + language.getLanguage() + ".wikipedia.org/w/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -41,7 +48,7 @@ public class WikipediaRepository {
     }
 
     public static WikipediaRepository forLanguage(Locale ttsLanguage) {
-        return new WikipediaRepository(ttsLanguage.getLanguage());
+        return new WikipediaRepository(ttsLanguage);
     }
 
     public void fetchItemsForLocation(Location location, int radius) {
@@ -78,7 +85,7 @@ public class WikipediaRepository {
                 !result.getExtract().isEmpty()) {
             infoChunks = new RealmList<>();
             String text = TextUtils.beautify(result.getExtract());
-            List<String> sentences = TextUtils.splitSentences(text);
+            List<String> sentences = TextUtils.splitSentences(text, mLanguage);
             for (String sentence : sentences) {
                 if (sentence.trim().length() == 0) continue;
                 infoChunks.add(new InfoChunk(sentence, false));

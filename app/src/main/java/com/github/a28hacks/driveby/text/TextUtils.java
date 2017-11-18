@@ -1,7 +1,5 @@
 package com.github.a28hacks.driveby.text;
 
-import android.util.Log;
-
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ public class TextUtils {
         }
     }
 
-    private static BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.GERMANY);
+    private static BreakIterator iterator;
 
     public static String beautify(String input) {
         if (input == null || input.isEmpty()) {
@@ -39,9 +37,10 @@ public class TextUtils {
         return s;
     }
 
-    public static List<String> splitSentences(String input) {
+    public static List<String> splitSentences(String input, Locale locale) {
 
-        Log.e(TAG, "splitSentences: " + input);
+        iterator = BreakIterator.getSentenceInstance(locale);
+
         List<String> sentences = new ArrayList<>();
         if (input != null && !input.isEmpty()) {
             iterator.setText(input);
@@ -50,6 +49,7 @@ public class TextUtils {
                 sentences.add(input.substring(start,end));
             }
         }
+
         return sentences;
     }
 
