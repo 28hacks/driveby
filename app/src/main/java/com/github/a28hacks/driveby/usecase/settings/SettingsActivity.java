@@ -11,6 +11,7 @@ import android.preference.PreferenceFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
+import com.github.a28hacks.driveby.App;
 import com.github.a28hacks.driveby.LicensesActivity;
 import com.github.a28hacks.driveby.R;
 import com.github.a28hacks.driveby.model.database.GeoItem;
@@ -19,6 +20,7 @@ import com.github.a28hacks.driveby.model.database.InfoChunk;
 import java.util.Locale;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -64,27 +66,33 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                     });
 
-            addPrefChangeListener(R.string.pref_key_tss_language, new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    if(newValue instanceof String) {
-                        setApplicationLocale((String) newValue);
-                        return true;
-                    }
-                    return false;
-                }
-            });
+            addPrefChangeListener(R.string.pref_key_tss_language, (preference, newValue) -> {
+                        if (newValue instanceof String) {
+                            setApplicationLocale((String) newValue);
+                            return true;
+                        }
+                        return false;
+                    });
 
         }
 
         public void setApplicationLocale(String lang) {
             Locale myLocale = new Locale(lang);
+            Locale.setDefault(myLocale);
             Resources res = getResources();
             Configuration conf = res.getConfiguration();
             conf.setLocale(myLocale);
             res.updateConfiguration(conf, res.getDisplayMetrics());
             Intent refresh = new Intent(getActivity(), SettingsActivity.class);
             startActivity(refresh);
+            ((App)getActivity().getApplication()).stopServices();
+
+            //clear db from data, thats not in the selected language
+            mRealm.executeTransaction(realm -> {
+                        RealmResults<GeoItem> itemsToDelete = realm.where(GeoItem.class).notEqualTo("languageCode", lang).findAll();
+                        itemsToDelete.deleteAllFromRealm();
+                    });
+
             getActivity().finish();
         }
 

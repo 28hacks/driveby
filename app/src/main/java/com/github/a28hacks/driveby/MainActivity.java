@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PERMISSION_REQ_CODE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startService(new Intent(this, DrivebyService.class));
+                //nice
             } else {
                 //boo
                 finish();
