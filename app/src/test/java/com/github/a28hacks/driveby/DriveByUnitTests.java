@@ -14,10 +14,10 @@ import static org.junit.Assert.*;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
+public class DriveByUnitTests {
 
     private static final String[] gerAbbrevs = {" ca.", " bzw.", " bspw.", " etc.", " d.h.", " evtl.",
-            " geb.", " ggf.", " Chr.", " allg.", " zz.", "o.Ä.", " z.T." };
+            " geb.", " ggf.", " Chr.", " allg.", " zz.", "o.Ä.", " z.T."};
 
     private static final String[] engAbbrevs = {" p. ex."," p.ex.", " e.g."};
 
@@ -25,7 +25,8 @@ public class ExampleUnitTest {
             "Die Universität Bremen (kurz Uni Bremen) ist mit dem Gründungsjahr 1971 eine der jüngeren staatlichen Universitäten Deutschlands und mit ca. 19.200 Studierenden und etwa 2.300 Wissenschaftlerinnen und Wissenschaftlern die größte Hochschule des Landes Bremen.\n" +
             "Die Universität zählt seit Juni 2012 zu den elf deutschen Hochschulen, die im Rahmen der Exzellenzinitiative in der höchstdotierten Förderlinie „Zukunftskonzept“ ausgezeichnet wurden.",
             "Das Bremer Institut für Kanada- und Québec-Studien (BIKQS) ist ein Institut an der Universität Bremen. Es wurde eingerichtet, um Studien zu Kanada inklusive der Provinz Québec zu fördern. Dies geschieht interdisziplinär, also unter Beteiligung von Lehre, Forschung und Studierenden der am Thema beteiligten Disziplinen. Dazu gehören die Romanistik, die Anglistik und Amerikanistik, aber auch die General Studies. Ziel ist es, ein „transversales interdisziplinäres Zertifikatstudium“ Kanada- und Québec-Studien zu entwickeln. Zugleich setzen sich die Institutsmitglieder für eine Intensivierung des wissenschaftlichen Austausches auf der Ebene der Lehrenden, Forscher bzw. Forschungsgruppen sowie der Studierenden und Promovierenden ein. Dies geschieht in der Form von öffentlichkeitswirksamen Präsentationen von Forschungsergebnissen, durch die Begegnung mit kanadischer und Québecer Kultur und die Vermittlung von Kenntnissen über Kanada und Québec in Form von Veranstaltungen und Publikationen. Darüber hinaus wurden Kooperationen mit zwei kanadischen Universitäten in Montréal und Guelph bei Toronto vereinbart; weitere Ziele sind die Einrichtung einer Gastprofessur sowie eines studentischen Austauschprogramms.",
-            "Hallo (Test(test) test). Test t te tes."
+            "Hallo (Test(test) test). Test t te tes.",
+            "Das Fraunhofer-Institut für Fertigungstechnik und Angewandte Materialforschung IFAM, auch in der Kurzbezeichnung „Fraunhofer IFAM“ genannt, ist eine Einrichtung der Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V. Lorem Ipsum dolor"
     };
 
     private static final String[] test_extracts_eng = new String[]{
@@ -65,6 +66,7 @@ public class ExampleUnitTest {
 
                     for (String abbrev : getAbbrevs(locale)) {
                         assertFalse(result.endsWith(abbrev));
+                        assertFalse(result.matches("\\s[a-zA-Z]\\.$")); //String ends with single letter followed by '.'
                     }
                 }
 
