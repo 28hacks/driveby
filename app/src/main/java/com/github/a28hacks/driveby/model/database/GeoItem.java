@@ -1,6 +1,8 @@
 package com.github.a28hacks.driveby.model.database;
 
 import com.github.a28hacks.driveby.model.wiki_api.GeoSearchResult;
+import com.github.a28hacks.driveby.model.wiki_api.Thumbnail;
+import com.github.a28hacks.driveby.text.TextUtils;
 
 import java.util.Date;
 
@@ -16,7 +18,11 @@ public class GeoItem extends RealmObject {
     private double latitude;
     private double longitude;
     private RealmList<InfoChunk> infoChunks;
+
+    private Thumbnail thumbnail;
+
     private String type;
+
     private Date firstToldAbout;
     private String languageCode;
 
@@ -27,6 +33,7 @@ public class GeoItem extends RealmObject {
     public GeoItem(GeoSearchResult searchResult, String languageCode) {
         this.id = searchResult.getPageId();
         this.title = searchResult.getTitle();
+        this.thumbnail = searchResult.getThumbnail();
         this.latitude = searchResult.getLat();
         this.longitude = searchResult.getLon();
         this.type = searchResult.getType();
@@ -47,6 +54,14 @@ public class GeoItem extends RealmObject {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Thumbnail getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(Thumbnail thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public double getLatitude() {

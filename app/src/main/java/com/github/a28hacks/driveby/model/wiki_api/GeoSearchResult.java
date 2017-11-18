@@ -17,6 +17,8 @@ public class GeoSearchResult {
     @SerializedName("dist")
     private float distance;
 
+    private Thumbnail thumbnail;
+
     private String extract;
 
     private String type;
@@ -35,6 +37,14 @@ public class GeoSearchResult {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Thumbnail getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(Thumbnail thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public double getLat() {

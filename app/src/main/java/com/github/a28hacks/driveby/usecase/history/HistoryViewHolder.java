@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.a28hacks.driveby.R;
 import com.github.a28hacks.driveby.model.database.GeoItem;
 
@@ -28,6 +31,9 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.date)
     TextView date;
+
+    @BindView(R.id.thumbnail)
+    ImageView image;
 
     public HistoryViewHolder(View itemView) {
         super(itemView);
@@ -53,6 +59,19 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
                 itemView.getContext().startActivity(i);
             }
         });
+
+        if(geoItem.getThumbnail()!= null && geoItem.getThumbnail().getSource() != null){
+            image.setVisibility(View.VISIBLE);
+            image.post(() -> {
+
+                Glide.with(image)
+                        .load(geoItem.getThumbnail().getSourceWithWidth(image.getMeasuredWidth()))
+                        .apply(new RequestOptions().centerCrop())
+                        .into(image);
+            });
+        }else{
+            image.setVisibility(View.GONE);
+        }
 
     }
 }

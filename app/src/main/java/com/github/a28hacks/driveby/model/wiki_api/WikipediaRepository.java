@@ -16,6 +16,7 @@ import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmList;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -34,7 +35,10 @@ public class WikipediaRepository {
 
     public WikipediaRepository(Locale language) {
         mLanguage = language;
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
         OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addInterceptor(logging)
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()

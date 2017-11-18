@@ -16,7 +16,7 @@ public interface WikipediaService {
     );
 
 
-    @GET("api.php?action=query&format=json&prop=extracts&exintro=&explaintext=&exlimit=max")
+    @GET("api.php?action=query&format=json&prop=pageimages|extracts&exintro=&explaintext=&exlimit=max")
     Observable<WikipediaResult> getExtractText(
             @Query("pageids") String pageIds
     );
