@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.github.a28hacks.driveby.LicensesActivity;
 import com.github.a28hacks.driveby.R;
-import com.github.a28hacks.driveby.database.RealmProvider;
 import com.github.a28hacks.driveby.model.database.GeoItem;
 import com.github.a28hacks.driveby.model.database.InfoChunk;
 
@@ -46,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
-            mRealm = RealmProvider.createRealmInstance(getActivity());
+            mRealm = Realm.getDefaultInstance();
 
             addPrefClickListener(R.string.pref_key_history_action_delete,
                     new Preference.OnPreferenceClickListener() {

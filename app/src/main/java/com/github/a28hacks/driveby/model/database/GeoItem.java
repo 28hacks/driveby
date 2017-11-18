@@ -1,7 +1,6 @@
 package com.github.a28hacks.driveby.model.database;
 
 import com.github.a28hacks.driveby.model.wiki_api.GeoSearchResult;
-import com.github.a28hacks.driveby.text.TextUtils;
 
 import java.util.Date;
 
@@ -87,4 +86,5 @@ public class GeoItem extends RealmObject {
     public void setFirstToldAbout(Date firstToldAbout) {
         this.firstToldAbout = firstToldAbout;
     }
+
 }

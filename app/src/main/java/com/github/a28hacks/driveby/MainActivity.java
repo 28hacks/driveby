@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.a28hacks.driveby.audio.TextToSpeechService;
-import com.github.a28hacks.driveby.database.RealmProvider;
 import com.github.a28hacks.driveby.location.DrivebyService;
 import com.github.a28hacks.driveby.model.database.GeoItem;
 import com.github.a28hacks.driveby.ui.NotificationController;
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         checkPermissions();
         checkTTSVoices();
 
-        mRealm = RealmProvider.createRealmInstance(this);
+        mRealm = Realm.getDefaultInstance();
 
         mHistoryAdapter = new HistoryAdapter();
         mHistoryList.setLayoutManager(

@@ -4,20 +4,20 @@ import com.github.a28hacks.driveby.model.wiki_api.WikipediaResult;
 
 import java.util.Locale;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface WikipediaService {
     @GET("api.php?action=query&format=json&list=geosearch&gsprop=type")
-    Call<WikipediaResult> getItemForLocation(
-            @Query("gsradius") int radius,
-            @Query("gscoord") String formatedCoords
+    Observable<WikipediaResult> getItemForLocation(
+            @Query("gscoord") String formatedCoords,
+            @Query("gsradius") int radius
     );
 
 
     @GET("api.php?action=query&format=json&prop=extracts&exintro=&explaintext=&exlimit=max")
-    Call<WikipediaResult> getExtractText(
+    Observable<WikipediaResult> getExtractText(
             @Query("pageids") String pageIds
     );
 
